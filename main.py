@@ -1,25 +1,31 @@
-from nn import MLP as m
+from engine import Value
+from nn import MLP
 
-x = [2.0, 3.0,-1.0]
-n = m(3,[4,4,1])
-print(n(x))
+# Sample data (input features and target outputs)
+xs = [[2.0, 3.0, -1.0], 
+      [3.0, -1.0, 0.5], 
+      [0.5, 1.0, 1.0], 
+      [1.0, 1.0, -1.0]]  # Input data
 
-xs = [[2.0,3.0,-1.0],[3.0, -1.0,0.5],[0.5,1.0,1.0],[1.0,1.0,-1.0]]
-ys  = [1.0,-1.0,-1.0,1.0]
+ys = [0.0,1.0, 1.0, 0.0]  # Target outputs
 
-for k in range (20) :
-    ypredictability = [n(x) for x in xs ]
-    loss =   sum([(yout-yin)**2 for  yout ,yin in zip(ys,ypredictability)])
+# Initialize the MLP with input and output sizes
+n = MLP(3, [4, 4, 1])
 
-    for p in n.parameters() :
+# Training loop
+for k in range(20):
+    # Forward pass
+    ypred = [n(x) for x in xs]
+    # Calculate loss as a Value object
+    loss = sum((yout - ygt) ** 2 for ygt, yout in zip(ys, ypred))
+
+    # Backward pass
+    for p in n.parameters():
         p.grad = 0.0
-    loss.backward()
+    loss.backward()  # All of the gradients are accumulated and start from zero
 
+    # Update weights
+    for p in n.parameters():
+        p.data += -0.1 * p.grad 
 
-    for p in n.parameters() :
-        p.data =+ 0.1 *  p.grad
-    
-    print(k,loss.data)
-
-
-print (ypredictability)
+    print(k, loss.data)
