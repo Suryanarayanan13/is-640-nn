@@ -1,5 +1,5 @@
 import random
-from micrograd.engine import Value
+from engine import Value
 
 class Module:
 
@@ -9,7 +9,7 @@ class Module:
 
     def parameters(self):
         return []
-
+    
 class Neuron(Module):
 
     def __init__(self, nin, nonlin=True):
@@ -26,7 +26,7 @@ class Neuron(Module):
 
     def __repr__(self):
         return f"{'ReLU' if self.nonlin else 'Linear'}Neuron({len(self.w)})"
-
+    
 class Layer(Module):
 
     def __init__(self, nin, nout, **kwargs):
